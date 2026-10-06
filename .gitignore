@@ -13,6 +13,7 @@
 *.ilg
 *.bbl
 *.ind
+*.thm
 
 # The generated PDF file
 ArduinoLibraries.pdf
