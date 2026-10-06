@@ -1,0 +1,19 @@
+# LaTeX files except AVRAssemblyLanguage.tex and arduinoLanguage.tex
+!AVRAssemblyLanguage.tex
+!arduinoLanguage.tex
+*.aux
+*.idx
+*.log
+*.out
+*.pdf
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.ilg
+*.bbl
+*.ind
+
+# The generated PDF file
+ArduinoLibraries.pdf
+
