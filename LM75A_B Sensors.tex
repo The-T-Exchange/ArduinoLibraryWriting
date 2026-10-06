@@ -1,0 +1,62 @@
+\chapter{LM75 Sensors}
+
+The LM75 is a temperature sensor available from Texas Instruments, amongst others. It is reasonably accurate with a $\pm{2}$\textdegree~C range. It communicates over \twi{} which the Arduino calls ``Wire'' to avoid copyright infringements.
+
+In order for our library to use the Wire library, it must be mentioned in the \textbf{depends} section of the properties file.
+
+The datasheet for the device can be downloaded as a PDF file from \url{https://www.nxp.com/docs/en/data-sheet/LM75B.pdf} or \url{https://www.nxp.com/docs/en/data-sheet/LM75A.pdf} if you have an LM75A variant.
+
+I have included both PDF files in the code repository for this demonstration. You can download everything later.
+
+\section{LM75 Description}
+
+From the LM75B data sheet:
+
+\emph{The LM75B is a temperature-to-digital converter using an on-chip band gap temperature sensor and Sigma-Delta A-to-D conversion technique with an over-temperature detection output. The LM75B contains a number of data registers: Configuration register (\pin{CONF}) to store the device settings such as device operation mode, \pin{OS}\footnote{\pin{OS} is the pin that toggles on over-temperature alarm being activated.} operation mode, \pin{OS} polarity and \pin{OS} fault queue as described in Section 7 of the LM75B data sheet.}
+
+\emph{It also has a temperature register (\pin{Temp}) to store the digital temp reading, and set-point registers (\reg{Tos} and \reg{Thyst}) to store programmable over-temperature shutdown and hysteresis limits, which can be
+communicated by a controller via the 2-wire serial I2C-bus interface.}
+
+\emph{The device also includes an open-drain output (\pin{OS}) which becomes active when the temperature exceeds the programmed limits. There are three selectable logic address pins so that eight devices can be connected on the same bus without address conflict.}
+
+\emph{The LM75B can be configured for different operation conditions. It can be set in normal mode to periodically monitor the ambient temperature, or in shutdown mode to minimize power consumption. The \pin{OS} output operates in either of two selectable modes: \pin{OS} comparator mode or \pin{OS} interrupt mode.}
+
+\emph{Its active state can be selected as either HIGH or LOW. The fault queue that defines the number of consecutive faults in order to activate the \pin{OS} output is programmable as well as the set-point limits.
+}
+\begin{itemize}
+    \item \emph{The LM75A and LM75B's temperature register, at least those from NXP Semiconductor, always stores an 11-bit two’s complement value giving a temperature resolution of 0.125\textdegree{}~C.}
+    \item \emph{Other LM75A devices, especially older ones, temperature register stores the data as a 9-bit two’s complement value giving a temperature resolution of 0.5\textdegree{}~C.}
+\end{itemize}
+
+\emph{This high temperature resolution is particularly useful in applications of measuring precisely the thermal drift or runaway. When the LM75B is accessed the conversion in process is not interrupted (that is, the \twi-bus section is totally independent of the Sigma-Delta converter section) and accessing the LM75B continuously without waiting at least one conversion time between communications will not prevent the device from updating the \reg{Temp} register with a new conversion result. The new conversion result will be available immediately after the Temp register is updated.}
+
+\emph{The LM75B powers up in the normal operation mode with the \pin{OS} pin in comparator mode, temperature threshold of 80\textdegree{}~C and hysteresis of 75\textdegree{}~C\footnote{The temperature that it must cool down to to turn off the alarm.}, so that it can be used as a stand-alone thermostat with those pre-defined temperature set points.}
+
+\emph{Yada, yada, yada!} This is why we need data sheets, it saves typing!
+
+\begin{tips}{Note}
+    In \emph{comparator} mode, the \pin{OS} pin will go active when the temperature set in the \reg{TOS} register---default 80\textdegree{}~C---and deactivate when it drops below the temperature set in register \reg{THYST}. Unless catered for, there will be no indication that over-temperature was detected.
+
+    Interrupt mode is slightly more complicated. When an over-temperature is detected, the \pin{OS} pin will activate as above. However, it will stay active for as long as the fault is not cleared by the user or code. This can be used to light an alarm indicator.
+
+    If the fault condition is cleared, then \pin{OS} will deactivate. However, when the temperature drops again below \reg{THYST} it will once again activate.
+
+    These combinations ensure that any fault indicators attached to the \pin{OS} pin will remain lit until cleared manually, even though the fault condition of the over-temperature is no longer active due to temperatures dropping.
+\end{tips}
+
+\section{LM75 Features}
+
+These devices are quite capable, provided that $\pm$2--3\textdegree{}~C accuracy is suitable. Briefly:
+
+\begin{itemize}
+    \item Works with power supplies between 2.8~V and 5.5~V.
+    \item Power use is 1~uA in shutdown (power save) mode. (I have found that this doesn't appear to work and the sensor drawn 10--11~mA in either mode!)
+    \item Clock speeds from 20~Hz to 400~KHz can be used.
+    \item \twi{} bus with up to eight devices on the bus at any one time.
+    \item Temperature range from $-55$\textdegree{}~C to $+125$\textdegree{}~C.
+    \item Accurate to $\pm2$\textdegree{}~C from $-25$\textdegree{}~C to $+100$\textdegree{}~C.
+    \item Accurate to $\pm3$\textdegree{}~C from $-55$\textdegree{}~C to $+125$\textdegree{}~C.
+    \item Over-temperature alarm with user configurable temperature and hysteresis, plus two alarm handling methods.
+    \item OS pin can be configured high or low
+    \item Product ID and hardware version can be read from the device.
+\end{itemize}

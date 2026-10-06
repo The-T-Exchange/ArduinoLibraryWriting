@@ -1,0 +1,370 @@
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% ~ Arduino Language - Arduino IDE Colors ~                                  %%%
+%%%                                                                            %%%
+%%% Norman Dunbar | 17/03/2023 | MIT Licence                                   %%%
+%%% -------------------------------------------------------------------------- %%%
+%%% For LaTeX projects:                                                        %%%
+%%%                                                                            %%%
+%%% Place this file in your source directory where the latex file you're       %%%
+%%% creating/editing lives.  Then, add:                                        %%%
+%%%    \input{AVRAssemblyLanguage.tex}                                         %%%
+%%% in the preamble, before \begin{document}, in your latex file.              %%%
+%%%                                                                            %%%
+%%% In your document, place your arduino code between:                         %%%
+%%%   \begin{lstlisting}[language=AVRAssembly]                                 %%%
+%%% and:                                                                       %%%
+%%%   \end{lstlisting}                                                         %%%
+%%%                                                                            %%%
+%%% Or create your own style to add non-built-in functions and variables.      %%%
+%%% -------------------------------------------------------------------------- %%%
+%%% For LyX projects:                                                          %%%
+%%%                                                                            %%%
+%%% In Lyx, go to Document->Settings and click on LaTeX Preamble.              %%%
+%%%                                                                            %%%
+%%% Add the following text to the existing preamble:                           %%%
+%%%                                                                            %%%
+%%% \lstdefinestyle{AVRasm}{                                                   %%%
+%%%   language=AVRAssembly,                                                    %%%
+%%%   %% Add other words needing highlighting below %%                         %%%
+%%%   morekeywords=[1]{},        % [1] -> dark blue - opcodes                  %%%
+%%%   morekeywords=[2]{},        % [2] -> blue - registers & bit names         %%%
+%%%   morekeywords=[3]{},        % [3] -> orange - assembler directives        %%%
+%%%   morekeywords=[4]{},        % [4] -> green - assembler functions          %%%
+%%% }                                                                          %%%
+%%%                                                                            %%%
+%%% To highlight some AVR assembly code, right-click the program listing       %%%
+%%% insert, and select settings. On the advanced tab, add the text:            %%%
+%%%    style=AVRasm                                                            %%%
+%%%                                                                            %%%
+%%% To highlight AVR assembly code inserts as a child document, right-click    %%%
+%%% the inserted file, choose settings. At the bottom of the dialogue, add:    %%%
+%%%    style=AVRasm                                                            %%%
+%%% in the "More parameter" editbox on the right side.                         %%%
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{color}
+\usepackage{listings}
+\usepackage{courier}
+
+%%% Define Custom IDE Colors %%%
+\definecolor{arduinoGreen}    {rgb} {0.17, 0.43, 0.01}
+\definecolor{arduinoGrey}     {rgb} {0.47, 0.47, 0.33}
+\definecolor{arduinoOrange}   {rgb} {0.8 , 0.4 , 0   }
+\definecolor{arduinoBlue}     {rgb} {0.01, 0.61, 0.98}
+\definecolor{arduinoDarkBlue} {rgb} {0.0 , 0.2 , 0.5 }
+
+%%% Define AVR Assembly Language %%%
+\lstdefinelanguage{AVRAssembly}{
+  sensitive=false,    % Keywords etc are not case sensitive
+  morecomment=[l]{;}, % Line comments begin with ';'
+  morecomment=[l]{//}, % Line comments begin with ';'
+  morestring=[b]",    % Strings are in double quotes
+%
+%
+  %%% Keyword Color Group 1 %%%  (called KEYWORD3 by arduino)
+  keywordstyle=\color{arduinoDarkBlue},
+  morekeywords={   % Add assembly instructions to group 1
+                ADC, ADD, ADIW, AND, ANDI, ASR,
+                %
+                BCLR, BLD, BRBC, BRBS, BRCC, BRCS, BREAK,
+                BREQ, BRGE, BRHC, BRID, BRIE, BRLO, BRLT,
+                BRMI, BRNE, BRPL, BRSH, BRTC, BRTS, BRVC, BRVS,
+                BSET, BST,
+                %
+                CALL, CBI, CBR, CLC, CLH, CLI, CLN, CLR, CLS,
+                CLT, CLV, CLZ, COM, CP, CPC, CPI, CPSE,
+                %
+                DEC, DES,
+                %
+                EICALL, EIJMP, ELPM, EOR,
+                %
+                FMUL, FMULS, FMULSU,
+                %
+                ICALL, IJMP, IN, INC,
+                %
+                JMP,
+                %
+                LAC, LAS, LAT, LD, LDD, LDI, LDS, LPM, LSL,
+                LSR,
+                %
+                MOV, MOVW, MUL, MULS, MULSU,
+                %
+                NEG, NOP,
+                %
+                OR, ORI, OUT,
+                %
+                POP, PUSH,
+                %
+                RCALL, RET, RETI, RJMP, ROL, ROR,
+                %
+                SBC, SBCI, SBI, SBIC, SBIS, SBIW, SBR, SBRC,
+                SBRS, SEC, SEH, SEI, SEN, SER, SES, SET, SEV,
+                SEZ, SLEEP, SPM, ST, STD, STS, SUB, SUBI, SWAP,
+                %
+                TST,
+                %
+                WDR,
+                %
+                XCH,
+                },
+%
+%
+  %%% Keyword Color Group 2 %%%  (called LITERAL1 by arduino)
+  keywordstyle=[2]\color{arduinoBlue},
+  keywords=[2]{ % Add registers and bit names to 2nd group
+                ACBG, ACD, ACI, ACIC, ACIE, ACIS0, ACIS1, ACME,
+                ACO, ACSR, ADATE, ADC, ADC0D, ADC1D, ADC2D,
+                ADC3D, ADC4D, ADC5D, ADCH, ADCL, ADCSRA, ADCSRB,
+                ADCW, ADEN, ADIE, ADIF, ADLAR, ADMUX, ADPS0,
+                ADPS1, ADPS2, ADSC, ADTS0, ADTS1, ADTS2, AIN0D,
+                AIN1D, AS2, ASSR,
+                %
+                BLBSET, BODS, BODSE, BORF,
+                %
+                CLKPCE, CLKPR, CLKPS0, CLKPS1, CLKPS2, CLKPS3,
+                COM0A0, COM0A1, COM0B0, COM0B1, COM1A0, COM1A1,
+                COM1B0, COM1B1, COM2A0, COM2A1, COM2B0, COM2B1,
+                CPHA, CPOL, CS00, CS01, CS02, CS10, CS11, CS12,
+                CS20, CS21, CS22,
+                %
+                DDB0, DDB1, DDB2, DDB3, DDB4, DDB5, DDB6, DDB7,
+                DDC0, DDC1, DDC2, DDC3, DDC4, DDC5, DDC6,
+                DDD0, DDD1, DDD2, DDD3, DDD4, DDD5, DDD6, DDD7,
+                DDRB, DDRC, DDRD, DIDR0, DIDR1, DOR0, DORD,
+                %
+                EEAR, EEARH, EEARL, EECR, EEDR, EEMPE, EEPE,
+                EEPM0, EEPM1, EERE, EERIE, EICRA, EIFR, EIMSK,
+                EXCLK, EXTRF, FE0,
+                %
+                FOC0A, FOC0B, FOC1A, FOC1B, FOC2A, FOC2B,
+                %
+                GPIOR0, GPIOR1, GPIOR2, GTCCR,
+                %
+                ICES1, ICF1, ICIE1, ICNC1, ICR1, ICR1H, ICR1L,
+                IDRIE0, INT0, INT1, INTF0, INTF1, ISC00, ISC01,
+                ISC10, ISC11, IVCE, IVSEL,
+                %
+                MCUCR, MCUSR, MPCM0, MSTR, MUX0, MUX1, MUX2,
+                MUX3,
+                %
+                OCF0A, OCF0B, OCF1A, OCF1B, OCF2A, OCF2B,
+                OCIE0A, OCIE0B, OCIE1A, OCIE1B, OCIE2A, OCIE2B,
+                OCR0A, OCR0B, OCR1A, OCR1AH, OCR1AL, OCR1B,
+                OCR1BH, OCR1BL, OCR2A, OCR2AUB, OCR2B, OCR2BUB,
+                OSCCAL,
+                %
+                PCICR, PCIE0, PCIE1, PCIE2, PCIF0, PCIF1,
+                PCIF2, PCIFR,
+                %
+                PCINT0, PCINT1, PCINT2, PCINT3, PCINT4, PCINT6,
+                PCINT7, PCINT8, PCINT9, PCINT10, PCINT11,
+                PCINT12, PCINT13, PCINT14, PCINT16, PCINT17,
+                PCINT18, PCINT19, PCINT20, PCINT22, PCINT23,
+                %
+                PCMSK0, PCMSK1, PCMSK2, PGERS, PGWRT,
+                %
+                PINB,
+                PINB0, PINB1, PINB2, PINB3, PINB4, PINB5, PINB6,
+                PINB7,
+                PINC,
+                PINC0, PINC1, PINC2, PINC3, PINC4, PINC5, PINC6,
+                PIND,
+                PIND0, PIND1, PIND2, PIND3, PIND4, PIND5, PIND6,
+                PIND7,
+                %
+                PORF,
+                PORTB,
+                PORTB0, PORTB1, PORTB2, PORTB3, PORTB4, PORTB5,
+                PORTB6, PORTB7,
+                PORTC,
+                PORTC0, PORTC1, PORTC2, PORTC3, PORTC4, PORTC5,
+                PORTC6,
+                PORTD,
+                PORTD0, PORTD1, PORTD2, PORTD3, PORTD4, PORTD5,
+                PORTD6, PORTD7,
+                %
+                PRADC, PRR, PRSPI, PRTIM0, PRTIM1, PRTIM2,
+                PRTWI, PRUSART0, PSRASY, PSRSYNC, PUD, PVINT21,
+                PVINT5,
+                %
+                REFS0, REFS1, RWWSB, RWWSRE, RXB80, RXC0,
+                RXCIE0, RXEN0,
+                %
+                SE, SELFPRGEN, SM0, SM1, SM2, SMCR, SP0, SP1,
+                SP10,
+                SP2, SP3, SP4, SP5, SP6, SP7, SP8, SP9,
+                SPCR, SPDR, SPE, SPH, SPI2X, SPIE, SPIF, SPL,
+                SPMCSR, SPMIE, SPR0, SPR1, SPSR, SREG,
+                %
+                TCCR1A, TCCR1B, TCCR1C, TCCR2A, TCCR2B, TCN2UB,
+                TCNT0, TCNT1, TCNT1H, TCNT1L, TCNT2, TCR2AUB,
+                TCR2BUB, TIFR0, TIFR1, TIFR2, TIMSK0, TIMSK1,
+                TIMSK2, TOIE0, TOIE1, TOIE2, TOV0, TOV1, TOV2,
+                TSM, TTCR0A, TTCR0B, TWA0, TWA1, TWA2, TWA3,
+                TWA4, TWA5, TWA6, TWAM0, TWAM1, TWAM2, TWAM3,
+                TWAM4, TWAM5, TWAM6, TWAMR, TWAR, TWBR, TWCR,
+                TWDR, TWEA, TWEN, TWGCE, TWIE, TWINT,
+                TWPS0, TWPS1, TWS3, TWS4, TWS5, TWS6, TWS7,
+                TWSR, TWSTA, TWSTO, TWWC, TXB80, TXC0, TXCIE0,
+                TXEN0,
+                %
+                U2X0, UBRR0, UBRR0H, UBRR0L, UCPHA0, UCPOL0,
+                UCSR0A, UCSR0B, UCSR0C, UCSZ00, UCSZ01, UCSZ02,
+                UDORD0, UDR0, UDRE0, UMSEL00, UMSEL01, UPE0,
+                UPM00, UPM01, USBS0,
+                %
+                WCOL, WDCE, WDE, WDIE, WDIF, WDP0, WDP1, WDP2,
+                WDP3, WDRF, WDTCSR, WGM00, WGM01, WGM02, WGM10,
+                WGM11, WGM12, WGM13, WGM20, WGM21, WGM22,
+                %
+                % Fuses
+                %
+                BODLEVEL0, BODLEVEL1, BODLEVEL2,
+                BOOTRST, BOOTSZ0, BOOTSZ1,
+                CKDIV8, CKOUT,
+                CKSEL0, CKSEL1, CKSEL2, CKSEL3,
+                DWEN, EESAVE, RSTDISBL, SPOIEN,
+                SUT0, SUT1, WDTON,
+                %
+                % Lock Bits
+                %
+                BLB01, BLB02, BLB11, BLB12,
+                LB1, LB2
+                %
+                % General purpose registers
+                %
+                R0,  R1,  R2,  R3,  R4,  R5,  R6,  R7,  R8,
+                R9,  R10, R11, R12, R13, R14, R15, R16, R17,
+                R18, R19, R20, R21, R22, R23, R24, R25, R26,
+                R27, R28, R29, R30, R31,
+                X, XH, XL, Y, YH, YL, Z, ZH, ZL,
+                },
+%
+%
+  %%% Keyword Color Group 3 %%%  (called KEYWORD1 by arduino)
+  keywordstyle=[3]\color{arduinoOrange},
+  keywords=[3]{  % Add AVR assembler directives as a 3rd group
+                BYTE,
+                %
+                CSEG, CSEGSIZE,
+                %
+                DB, DD, DEF, DEVICE, DSEG, DQ, DW,
+                %
+                ELSE, ELIF, ENDIF, ENDM, ENDMACRO, EQU,
+                ERROR, ESEG, EXIT,
+                %
+                IF, IFDEF, IFNDEF, INCLUDE,
+                %
+                LIST, LISTMAC,
+                %
+                MACRO, MESSAGE,
+                %
+                NOLIST, NOOVERLAP,
+                %
+                ORG, OVERLAP,
+                %
+                SET,
+                %
+                UNDEF,
+                %
+                % Add AVR-GAS assembler directives
+                %
+                ABORT, ALIGN, APP-FILE, ASCII, ASCIZ,
+                %
+                BALIGN, BYTE,
+                %
+                COMM,
+                %
+                DATA, DEF, DESC, DIM, DOUBLE,
+                %
+                EJECT, ELSE, ENDEF, ENDIF, EQU, EXTERN,
+                %
+                FILE, FILL, FLOAT,
+                %
+                GLOBAL,
+                %
+                HWORD,
+                %
+                IDENT, IF, INCLUDE, INT, IRP, IRPC,
+                %
+                LCOMM, LFLAGS, LINE, LN, LIST, LONG,
+                %
+                MACRO,
+                %
+                NOLIST,
+                %
+                OCTA, ORG,
+                %
+                P2ALIGN, PSIZE,
+                %
+                QUAD,
+                %
+                REPT,
+                %
+                SUBTTL, SCL, SECTION, SET, SHORT,
+                SINGLE, SHORT, SPACE, STABD, STABN,
+                STABS, STRING,
+                %
+                TAG, TEXT, TITLE, TYPE,
+                %
+                VAL,
+                %
+                WORD,
+                %
+                % Add AVR-GCC preprocessor directives
+                %
+                DEFINE, INCLUDE, UNDEF, WARNING, PRAGMA,
+                },
+%
+%
+  %%% Keyword Color Group 4 %%%  (called KEYWORD2 by arduino)
+  keywordstyle=[4]\color{arduinoGreen},
+  keywords=[4]{  % Add AVR assembler functions as a 4th group
+                ABS,
+                BYTE2, BYTE3, BYTE4,
+                DEFINED,
+                EXP2,
+                FRAC,
+                HIGH, HWRD,
+                INT,
+                LOW, LWRD, LOG2,
+                PAGE,
+                Q7, Q15,
+                STRLEN,
+                %
+                % And some macros from avrlib
+                %
+                __SFR_OFFSET, _SFR_IO_ADDR, _SFR_IO_REG_P,
+                _SFR_MEM_ADDR, _SFR_ASM_COMPAT, _SFR_MEM8,
+                _SFR_MEM16, _SFR_MEM32, _SFR_IO8, _SFR_IO16,
+                _SFR_BYTE, _SFR_WORD, _SFR_DWORD
+                %
+                % And avr-gas functions.
+                %
+                HH8, HI8, HLO8, HHI8,
+                LO8,
+                PM, PM_HH8, PM_HI8, PM_LO8,
+                },
+%
+%
+  %%% Set Other Colors %%%
+  stringstyle=\color{arduinoDarkBlue},
+  commentstyle=\color{arduinoGrey},
+%
+%
+  %%%% Line Numbering %%%%
+  numbers=left,
+  numbersep=5pt,
+  numberstyle=\color{arduinoGrey},
+  showstringspaces=false
+  showlines=true
+  emptylines=1
+  numbers=left
+  %stepnumber=2,                      % show every 2 line numbers
+%
+%
+  %%%% Code Box Style %%%%
+  breaklines=true,                    % wordwrapping
+  tabsize=4,
+  basicstyle=\ttfamily
+}

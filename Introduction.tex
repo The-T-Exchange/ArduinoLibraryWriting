@@ -1,0 +1,66 @@
+\chapter{Introduction}
+
+In this short chat, I will explain the background processes and files required to write a small library for use with the Arduino IDE---and it can also be used with PlatformIO\footnote{\url{https://platformio.org}} too.
+
+PlatformIO is another IDE system, but very much improved over the Arduino IDE, event with the latest release of the IDE.
+
+The library I develop will be for a small temperature sensor, the LM75A or the LM75B. These devices allow the current temperature to be read; an alarm to be triggered when the temperature exceeds a preset value; amongst other features.
+
+The data sheet for these sensors can be downloaded from \url{https://www.nxp.com/docs/en/data-sheet/LM75B.pdf}.
+
+The LM75 family of sensors communicate with \twi{} aka TWI aka Wire. Wire is the Arduino library used to talk \twi{} but cannot be called \twi{} for copyright reasons!
+
+The LM75 sensors have quite a number of features, but in the interests of all of us getting home tonight, I am limiting the discussion to simply reading the temperature and reading the device product id. I do have an LM75A library which I wrote in Assembly Language for my book \emph{Arduino Assembly Language} coming to the shops in the next couple of months. That library does cover everything that the LM75 sensors have to offer.
+
+\section{What is a Library?}
+
+In a nutshell, a library is something you create when you find yourself writing the same code, over and over again, in different sketches.
+
+Libraries are not specific to the Arduino system, the C and C++ compilers used by the Arduino IDE have their own support libraries so that you, and I, don't have to keep duplicating code.
+
+In addition, the code in a library has \emph{usually} been well tested so by using the library, instead of writing code over and over, you have less chance of making a typing mistake and introducing bugs into your sketches.
+
+\begin{tips}{Tip}
+    Write your library code in plain C. That way people who may wish to include your library in a C++ sketch or library, can do so without errors. The same is not true if you write in C++ and someone wants to use it in a C sketch or library.
+\end{tips}
+
+
+\section{Library Background}
+
+When writing libraries, other than the library source itself, there are three other supporting files required by every Arduino Library:
+
+\begin{itemize}
+    \item The Library Properties file.
+    \item The keywords file.
+    \item The licence\footnote{Yes, I know, American spelling!} file.
+\end{itemize}
+
+These files will be discussed shortly. First of all, the tree structure for a library is required.
+
+\section{Library Tree Structure}
+
+When developing your library code, it's best to duplicate the exact structure that will be required when the library is installed in the IDE.
+
+For the library I'm developing here today, \path{LM75A_AB} covers both the LM75A and LM75B devices which are pretty much identical if you get them from NXP Semicondictor. Older LM75As are not quite the same, but the code still works. The file structure we need to create is as follows.
+
+You will note the presence of the boilerplate files---\path{LICENSE}, \path{keywords.txt} and \path{library.properties}
+
+\begin{verbatim}
+LM75_AB
+├── examples
+│   └── Temperature
+│       └── Temperature.ino
+├── keywords.txt
+├── library.properties
+├── LICENSE
+└── src
+    ├── LM75_AB.c
+    └── LM75_AB.h
+
+3 directories, 6 files
+\end{verbatim}
+
+If your library supplies any example sketches, they must be located in the \path{examples} sub-directory. The source files, all of them, has to live in the \path{src} sub-directory and, not shown here, you can provide documentation in a \path{Docs} folder---but it will not show up anywhere in the IDE, it's entirely for you and/or your library users to find and use as appropriate!
+
+The URL \url{https://arduino.github.io/arduino-cli/1.5/library-specification/} has details of what is required when creating new Arduino libraries. This applies to all IDE versions from 1.5 onward.
+

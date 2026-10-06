@@ -1,0 +1,121 @@
+%%%==========================================================================%%%
+%%%              Packages and such like added by Norman Dunbar               %%%
+%%%==========================================================================%%%
+
+\usepackage{nameref}% To use \nameref{...}
+\usepackage{wrapfig}% To wrap text around figures.
+\usepackage{listings}% Guess!
+\usepackage[toc,page]{appendix}% Gets a ``blank'' Appendix page.
+\usepackage{longtable}% For tables extending over a page.
+\usepackage[obeyspaces]{url}% Allow spaces in \path{}.
+\usepackage{xurl}% Ensure \URLs break at /.:*-~'" characters.
+\usepackage{xcolor}% Required for the setup of the listings.
+\usepackage[LGR,T1]{fontenc}% To get Ohms symbols.
+\usepackage{array}%To get table's centred and wrapped.
+\usepackage{courier}% For listings, the default is dire!
+\usepackage[unicode=true,
+    bookmarks=true,
+    bookmarksnumbered=false,
+    bookmarksopen=false,
+    breaklinks=true,
+    pdfborder={0 0 0},
+    pdfborderstyle={},
+    backref=false,
+    colorlinks=true]{hyperref}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{pmboxdraw} % For `tree` diagrams.
+
+\urlstyle{same}% Ensure URLs are in the same font as the text. Not in monotype!
+
+\definecolor{ocre}{RGB}{243,102,25}
+\definecolor{wwwDarkGreen}{HTML}{006400}
+\definecolor{wwwDarkOrchid}{HTML}{9932CC}
+\definecolor{wwwDarkOrange}{HTML}{FF8C00}
+
+
+\input{arduinoLanguage.tex}% To get Arduino code highlighting
+
+\lstdefinestyle{myArduino}{%% Define an Arduino style for use later %%
+    language=Arduino,
+    %% Add other words needing highlighting below %%
+    morekeywords=[1]{},                  % [1] -> dark green
+    morekeywords=[2]{FILE_WRITE},        % [2] -> light blue
+    morekeywords=[3]{SD, File},          % [3] -> bold orange
+    morekeywords=[4]{open, exists},      % [4] -> orange
+    %% The lines below add a nifty box around the code %%
+    frame=single,
+    rulesepcolor=\color{arduinoBlue},
+    numbers=left,
+    basicstyle={\footnotesize\ttfamily}%To match lstlisting settings
+}
+
+\input{AVRAssemblyLanguage.tex}
+
+\lstdefinestyle{AVRasm}{
+    language=AVRAssembly,
+    %% Add other words needing highlighting below %%
+    morekeywords=[1]{},        % [1] -> dark blue - opcodes
+    morekeywords=[2]{},        % [2] -> blue - registers & bit names
+    morekeywords=[3]{},        % [3] -> bold orange - directives
+    morekeywords=[4]{},        % [4] -> bold green - assembler functions
+    %% The lines below add a nifty box around the code %%
+    frame=single,
+    rulesepcolor=\color{arduinoBlue},
+    numbers=left,
+    basicstyle={\footnotesize\ttfamily}%To match lstlisting settings
+}
+
+% Macros for Arduino Assembly Language.
+\newcommand{\ardvers}{2.1.0}%VEesion of Arduino IDE in use.
+
+\newcommand{\ohms}{\textgreek{W}}%Ohms symbol.
+\newcommand{\app}[1]{\emph{#1}}%Application names.
+\newcommand{\reg}[1]{\texttt{\uppercase{#1}}}%Register names.
+\newcommand{\regmc}[1]{\texttt{#1}}%Register names.
+\newcommand{\regbit}[1]{\texttt{\uppercase{#1}}}%Register bit names.
+\newcommand{\bin}[1]{0b{#1}}%Binary numbers.
+\newcommand{\hexa}[1]{0x\uppercase{{#1}}}%Hexadecimal numbers.
+\newcommand{\varb}[1]{\texttt{#1}}%Variable names.
+\newcommand{\code}[1]{\texttt{#1}}%Inline code segments.
+\newcommand{\func}[1]{\texttt{#1}}%Procedure and function names.
+\newcommand{\pin}[1]{\texttt{#1}}%Arduino/AVR pin names.
+\newcommand{\unitname}[1]{\texttt{#1}}%ELF section names.
+\newcommand{\externC}{\code{extern \textquotedbl{}C\textquotedbl}}
+\newcommand{\shl}{\texttt{<}\texttt{<}~}% << in inline code.
+\newcommand{\shr}{\texttt{>}\texttt{>}~}% >> in inline code.
+\newcommand{\atmega}{ATmega328P}% Get capitalisation correct!
+\newcommand{\lyxarrow}{$\rightarrow$}
+\newcommand{\twi}{I$^2$C}
+
+
+%%% Setup Hyperref configuration %%%
+\hypersetup{pdftitle={Arduino Assembly Language},
+    pdfauthor={Norman Dunbar},
+    pdfsubject={Using AVR Assembly Language with the Arduino IDE.},
+    pdfkeywords={Arduino, AVR, ATmega328P,  microcontroller, Uno, Duemilanove, Nano, Assembly Language}}
+
+
+%%% Lyx specific additions %%%
+\makeatletter
+
+\DeclareRobustCommand{\greektext}{%
+    \fontencoding{LGR}\selectfont\def\encodingdefault{LGR}}
+\DeclareRobustCommand{\textgreek}[1]{\leavevmode{\greektext #1}}
+\ProvideTextCommand{\~}{LGR}[1]{\char126#1}
+
+\makeatother
+
+%%% Settings for listings %%%
+\lstset{breaklines=true,
+    tabsize=4,
+    basicstyle={\footnotesize\ttfamily}, %%% Overridden by SVMono class. :(
+    basewidth={0.55em}, %%% Needed to fit listings on page %%%
+    showspaces=false,
+    showstringspaces=false,
+    keepspaces=true,
+    frame=single}
+
+%%%==========================================================================%%%
+%%%                End of Norman Dunbar's additions                          %%%
+%%%==========================================================================%%%

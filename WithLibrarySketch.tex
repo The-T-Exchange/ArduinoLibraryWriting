@@ -1,0 +1,79 @@
+\chapter{The \texttt{WithLibrary.ino} Sketch}
+
+The initial \path{WithLibrary.ino} sketch was a simple duplicate of \path{BareBones.ino}. However, as the LM75 constants and functions are now in the library, we don't want them to be present in the sketch or we will get ``duplicate identifier'' errors from the compiler.
+
+After extracting all the LM75 ``stuff'' to the library header and source files, then deleting it from the \path{BareBones.ino} sketch, we are left with the \func{setup()} and \func{loop()} functions in the main \path{WithLibrary.ino} sketch file.
+
+Listing \ref{lst: WithLibrary.ino - Header} is the header, and can be skipped over!
+
+\begin{lstlisting}[caption={WithLibrary.ino - Header.},label={lst: WithLibrary.ino - Header}, style=myArduino, firstnumber=1]
+    //===============================================================
+    // LM75 Temperature sensor demo for MakerSpace presentation.
+    //
+    // Uses the LM75 library, developed for the presentation, to
+    // access the LM75 sensor.
+    //
+    //
+    // Norman Dunbar.
+    // 16 June 2026.
+    //===============================================================
+\end{lstlisting}
+
+Listing \ref{lst: WithLibrary.ino - Prologue} is the new prologue. As you can see, there's not a lot left. All we have to declare are the LM75 sensor's seven bit address and the clock speed we want to run it at on the \twi{} bus.
+
+\begin{lstlisting}[caption={WithLibrary.ino - Prologue.},label={lst: WithLibrary.ino - Prologue}, style=myArduino, firstnumber=12]
+    #include <LM75_AB.h>
+
+    // Where is my sensor?
+    const int LM75_ADDRESS = 0x4F;
+
+    // Bus speed in Hz.
+    const uint32_t LM75_CLOCK_HZ = 100000;    // 100 KHz.
+\end{lstlisting}
+
+What I hope you will notice, at line 12, is the fact that the previous inclusion of \path{Wire.h} has gone. By following the instruction above to use a library---see Section \ref{section: Using the library} on Page \pageref{section: Using the library}---the correct header files for the library have been added to the sketch.
+
+The \func{setup()} function is next, see Listing \ref{lst: WithLibrary.ino - Setup}. Nothing has changed in this function since the \path{BareBones.ino} sketch. It is identical.
+
+
+\begin{lstlisting}[caption={WithLibrary.ino - Setup.},label={lst: WithLibrary.ino - Setup}, style=myArduino, firstnumber=24]
+    void setup() {
+        uint8_t productID;
+
+        // Start up I2C as a controller. Talking to the sensor
+        // at 100 KHz.
+        LM75_begin(LM75_ADDRESS, LM75_CLOCK_HZ);
+
+        // Need the Serial Monitor for output.
+        Serial.begin(9600);
+        Serial.println("LM75 Temperature Sensor");
+        Serial.print("LM75 Product ID: ");
+
+        productID = LM75_getProductId(LM75_ADDRESS);
+        if (productID == LM75_UNKNOWN_ID)
+        Serial.println("Unknown");
+        else
+        Serial.println(productID);
+    }
+\end{lstlisting}
+
+Finally, the \func{loop()} function, as per Listing \ref{lst: WithLibrary.ino - Loop} and again, nothing has changed.
+
+
+\begin{lstlisting}[caption={WithLibrary.ino - Loop.},label={lst: WithLibrary.ino - Loop}, style=myArduino, firstnumber=47]
+    void loop() {
+        // Read the temperature.
+        float result = LM75_getCurrentTemperature(LM75_ADDRESS);
+
+        // Print it out with much messing with Serial!
+        Serial.print("Temperature: ");
+        Serial.print(result);
+        Serial.println(" degrees C.");
+
+        // Delay is usually a bad thing, but here we are not doing
+        // anything else,
+        delay(1500);
+    }
+\end{lstlisting}
+
+So, that was easy. We started with some fairly generic LM75 accessing functions in the \path{BareBones.ino} sketch, which we tested and found to be working. We extracted those functions to a library and edited the sketch to remove them, changing it only to use the library's header instead of the Wire library header.

@@ -1,0 +1,187 @@
+\chapter{The LM75\_AB Library}
+
+I intended to call this library LM75, however, there's already a library by that name---which incidentally, has all the LM75 features implemented---and because it was at a higher version than mine, it downloaded and overwrote mine! Hence the name change.
+
+First a warning!
+
+\begin{tips}{Warning}
+    If you write a library which includes the \path{Wire.h} header file in any of the library's own header or source files, you will see compiler errors relating to the \func{class} keyword in the header file \path{Printable.h} amongst many other error messages. This will happen when you attempt to compile a sketch which uses your library.
+
+    \path{Wire.h} is a C++ header and as such, requires the C++ compiler. Your library file is named \path{something.c} so the C compiler is used, and that unfortunately, doesn't know anything about C++ classes.
+
+    The solution is simple. Rename your library's source files from \path{something.c} to \path{something.cpp}
+\end{tips}
+
+\section{Creating the Library}
+
+It's much easier, the above warning not withstanding, to create a library from a working sketch. By having a working sketch, you know that your code is working so any problems after conversion to a library, is a problem in the conversion and not in the code.
+
+To convert our sketch to a library, I opened \path{BareBones.ino} and saved it as \path{WithLibrary.ino} then extracted all of the LM75 related functions into the library source file \path{LM75_AB.cpp}; and the various constants and function prototypes into \path{LM75_AB.h}.
+
+\subsection{Header File \texttt{LM75\_AB.h}}
+
+As mentioned above, all I've done to create the header file is extract all the constants and functions that relate purely to the LM75 accesses. We don't want any sketch specific constants here, only those of the LM75.
+
+\begin{lstlisting}[caption={Library header file - \texttt{LM75\_AB.h}.},label={lst: LM75_AB - Library header file}, style=myArduino, firstnumber=1]
+#ifndef LM75_AB_H
+#define LM75_AB_H
+
+#include <Wire.h>
+
+// LM75 Registers.
+const uint8_t LM75_TEMPERATURE_REG  = 0;
+const uint8_t LM75_CONFIG_REG       = 1;
+const uint8_t LM75_T_HYST_REG       = 2;
+const uint8_t LM75_T_OS_REG         = 3;
+const uint8_t LM75_PRODUCT_ID_REG   = 7;
+
+// Function prototypes.
+void LM75_begin(const int address, uint32_t clockHZ);
+void LM75_end();
+void LM75_setRegister(const int address, const int reg);
+uint8_t LM75_getProductId(const int address);
+float LM75_getCurrentTemperature(const int address);
+
+// Product ID is unknown.
+const uint8_t LM75_UNKNOWN_ID = 255;
+
+#endif // LM75_AB_H
+\end{lstlisting}
+
+\subsection{Source File \texttt{LM75\_AB.cpp}}
+
+The source file is a simple extraction of the various LM75 accessing functions from the \path{BareBones.ino} sketch. Nothing has changed, hence I'm not splitting it up into separate functions with explanations here.
+
+\begin{lstlisting}[caption={Library source file - \texttt{LM75\_AB.cpp - Heading}.},label={lst: LM75_AB - Library header file - Heading}, style=myArduino, firstnumber=1]
+//=============================================================
+// LM75 Temperature sensor library for MakerSpace presentation.
+//
+// This demo library only does the following:
+//
+// Initialises the LM75.
+// Finalises the LM75.
+// Reads the product id code.
+// Reads the current temperature.
+//
+// The LM75 can do a lot more!
+//
+// Norman Dunbar.
+// 16 June 2026.
+//=============================================================
+
+#include <LM75_AB.h>
+
+// Initialises the LM75 sensor with a bus speed as required.
+void LM75_begin(const int address, uint32_t clockHZ) {
+    Wire.begin(address);
+    Wire.setClock(clockHZ);
+}
+
+
+// Shuts down the Wire bus for the LM75. This is needed in
+// sketches where the bus might be needed by another sensor.
+// In this simple demo, it is never called.
+void LM75_end() {
+    Wire.end();
+}
+
+
+// Configures the LM75 with the register we wish to
+// read from, until changed. Ends the write transaction
+// when done.
+void LM75_setRegister(const int address, const int reg) {
+    Wire.beginTransmission(address);
+    Wire.write(reg);
+    Wire.endTransmission(true);
+}
+
+
+// Returns the product ID byte for the LM75 sensor
+// attached. If not present will return 0xFF instead.
+uint8_t LM75_getProductId(const int address) {
+    uint8_t productID;
+
+    // Select the product id register.
+    LM75_setRegister(address, LM75_PRODUCT_ID_REG);
+
+    // Theres only one byte.
+    Wire.requestFrom(address, 1, true);
+
+    // Fetch it.
+    if (Wire.available())
+    productID = Wire.read();
+
+    // Reset default register to temperature.
+    LM75_setRegister(address, LM75_TEMPERATURE_REG);
+
+    // Return the product id.
+    return productID;
+}
+
+// Retrieves the two bytes (11 bits) making up the current
+// temperature.
+float LM75_getCurrentTemperature(const int address) {
+    // Storage for result
+    int8_t tempData[2];
+    int16_t result = 0;
+
+    // Two bytes required.
+    Wire.requestFrom(address, 2, true);
+
+    // Fetch degrees & fractions as an 11 bit value.
+    // Multiply by 0.125 to convert to degrees Celcius.
+    if (Wire.available()) {
+        tempData[0] = Wire.read();
+        tempData[1] = Wire.read() & 0b11100000; // Bits 7--5.
+        result = ((int16_t)(tempData[0])<<3) + (tempData[1] >> 5);
+    }
+
+    return result * 0.125;
+}
+\end{lstlisting}
+
+
+\section{Library Installation}
+
+So, we have a library written, how do we install it in the Arduino IDE so that we can use it from sketches? We have two options:
+
+\begin{itemize}
+    \item Install directly from the source tree structure.
+    \item Install as a zip file.
+\end{itemize}
+
+\subsection{Installing as a Zip File}
+
+To install a zip file onto the IDE, follow these steps.
+
+\begin{enumerate}
+    \item Create the \path{LM75_AB.zip} file from the library's source tree, if it currently doesn't exists---or if you have updated it since last time.
+    \begin{itemize}
+         \item Right click on your \path{LM75_AB} directory name and select the option to compress the directory. This will create a new zip file named \path{LM75_AB.zip} alongside the \path{LM75_AB} directory.
+    \end{itemize}
+    \item Open the Arduino IDE if not already open.
+    \item Click Sketch\lyxarrow{}Include Library\lyxarrow{}Add .Zip Library.
+    \item Navigate to where the \path{LM75_AB.zip} file is located.
+    \item Double-click the \path{LM75_AB.zip} file to select and install it.
+\end{enumerate}
+
+
+\subsection{Installing the Source Files}
+
+This is by far the easiest! You have the correct source structure set aside elsewhere on your computer and you've been doing your development work there.
+
+There are three steps to installing the library.
+
+\begin{enumerate}
+    \item Shut down the Arduino IDE if it is open.
+    \item Copy the entire \path{LM75_AB} directory structure, and paste it into the \path{Arduino/libraries}\footnote{I do not use Windows, so my directory paths are Linux specific. On Windows it's \emph{probably} \path{c:/users/your_name/Arduino}.} directory in your user.
+    \item Open the IDE again.
+\end{enumerate}
+
+The good thing about this manner is, you can then edit the library code in place, adding or changing features and such like. Each time you make a change, recompile a sketch in the IDE to make sure things still work and you have not introduced any coding errors.
+
+The bad thing about this method is that you need to have the IDE closed. If it is open, no errors will occur, but you will not be able to see the LM75\_AB library to add it to sketches or examine any examples provided.
+
+\section{Using the Library}\label{section: Using the library}
+
+Open the \path{WithLibrary.ino}\footnote{Or any other sketch you want to use the library.} sketch in the IDE and click Sketch\lyxarrow{}Include Library then scroll down till you find LM75\_AB, then just double-click it. Job done.

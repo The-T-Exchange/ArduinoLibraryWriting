@@ -1,0 +1,21 @@
+If the source file for any library uses the Wire.h header file
+then there will be compiler errors like:
+
+error: request for member 'write' in something not a structure or union
+
+All over your code. There may also be errors about Printable.h
+and the Class keyword being unrecognisable. 
+
+The reason, believe it or not, is because the source file for 
+your library is named something.c and this uses the C compiler
+to compile it. However, Wire.h introduces classes which are C++
+so the C++ compiler is required.
+
+Rename your source file to something.cpp instead!
+
+Ask. Me. How. I. Know!
+
+See: https://forum.arduino.cc/t/why-wont-wire-h-compile-when-included-in-a-library/853007/8
+
+Norman Dunbar
+19 June 2026.

@@ -1,0 +1,159 @@
+\chapter{Boilerplate Files}
+
+Any library that you wish to distribute should have the three boilerplate files as noted above. We will start with the easy one---the licence file---named \path{LICENSE}. You will note that it has the American spelling, c'est la vie\footnote{As they say in Cardiff!}
+
+\section{The Licence File}
+
+The \path{LICENSE} file is a simple text file which details how you wish to license the use of your library. In many cases, the \emph{MIT License} is used, which basically gives everyone the rights to use the library as they see fit, in commercial or non-commercial products.
+
+My own libraries, usually published for use with my books, are always licenced under the MIT licence which allows anyone to do anything. It's easiest. Listing \ref{lst: The MIT Licence for the LM75A library} shows an example.
+
+There are other licencing options, and the easiest manner of determining which might be best for your library (or sketch) is to head over to \url{https://choosealicense.com/} and have a look through the options available.
+
+\begin{lstlisting}[caption={The MIT Licence for the LM75\_AB library.},label={lst: The MIT Licence for the LM75A library}]
+MIT License
+
+Copyright (c) 2026 Norman Dunbar.
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+\end{lstlisting}
+
+Obviously, if the library is simply for your own use, you don't \emph{need} a \path{LICENSE} file, but it's useful to be explicit from the start. You never know when something will take off!
+
+The licence file is named \path{LICENSE}, in upper case, and must live in the root directory for the library.
+
+Next up, the properties file.
+
+\section{The Library Properties File}
+
+Arduino libraries need a properties file to inform the IDE, and the users, who wrote the library, which microcontrollers and/or frameworks\footnote{A framework is just the collection of libraries, compilers, linkers, assemblers, uploaders and such like that are needed to generate and use sketches for that particular microcontroller you are writing for.} it should be used with and where to get support when it all goes belly up!
+
+In addition, the IDE's \emph{Library Manager} uses it to search and install the library and any dependencies that the library might require.
+
+The URL \url{https://arduino.github.io/arduino-cli/1.5/library-specification/} describes all the permitted fields and how they should be used. You don't need all of them, thankfully!
+
+The properties file I'm using for the LM75\_AB library is shown in Listing \ref{lst: The library properties file for the LM75_AB library}.
+
+\begin{lstlisting}[caption={The \texttt{library.properties} file for the LM75\_AB library.},label={lst: The library properties file for the LM75_AB library}]
+name=LM75_AB
+version=1.0.0
+author=Norman Dunbar <norman@dunbar-it.co.uk>
+maintainer=Norman Dunbar <norman@dunbar-it.co.uk>
+sentence=LM75A/B temperature sensor routines for Arduino C/C++ code.
+paragraph=This library provides various functions for use with LM75A/B temperature sensors in Arduino sketches on ATmega328P and similar AVR/Microchip microcontrollers.
+category=Sensors
+url=https://github.com/NormanDunbar/LM75_AB
+depends=Wire
+includes=LM75_AB.h
+architectures=avr
+dot_a_linkage=true
+\end{lstlisting}
+
+The various fields in use for the LM75\_AB library are as follows:
+
+\begin{description}[\textbf{dot\_a\_linkage}]
+    \item[\textbf{name}] A simple one! The name of the library as it will be seen in the IDE.
+    \item[\textbf{version}] Another easy one, a version number in the format \emph{major.minor.patch}. This is the \emph{semver} or Semantic Versioning format---see \url{https://semver.org} for full details.
+    \item[\textbf{author}] The name or nickname of the author(s) and their email addresses (not mandatory) separated by commas if there is more than one author. There's not a comma between the name and the email though, just spaces.
+    \item[\textbf{maintainer}] The name and email address of whoever is currently maintaining the library.
+    \item[\textbf{sentence}] One sentence explaining what the library is for.
+    \item[\textbf{paragraph}] A longer description of the library. Whatever you have for \textbf{sentence} will be prepended to the \textbf{paragraph}, so don't duplicate yourself.
+    \item[\textbf{category}] The category, pick one, that the library covers. For LM75\_AB it's a sensor, but you can pick from:
+    \begin{itemize}
+        \item Display.
+        \item Communication.
+        \item Signal input/output.
+        \item Sensors.
+        \item Device control.
+        \item Timing.
+        \item Data Storage.
+        \item Data Processing.
+        \item Other.
+        \item Uncategorized---which is the default if nothing specified for \textbf{category}.
+    \end{itemize}
+    \item[\textbf{url}] The URL of the library project. This could be a GitHub repository or a simple website. It will be used when the user clicks ``More Info'' in the Library Manager.
+    \item[\textbf{depends}] An optional comma separated list of other libraries that are required to build this library. The Library Manager will use this list to install all the dependencies not already  installed. There's no need to double-quote library names with spaces as the comma is taken as the library name terminating character.
+    \item[\textbf{includes}] An optional list of include files that any sketch will require if it is to use your library. Like \textbf{depends} it is a comma separated list. If this is not specified, then all the \path{*.h} files found in the \emph{root source folder}\footnote{What does this actually mean? In the root directory of the library? In the root of the \path{src} directory?} will be included. Be specific and avoid doubt!
+    \item[\textbf{architectures}] The architectures that this library, as supplied, can be used on. Unfortunately, there isn't a list on the above URL, so just take a look at any of the supplied libraries for your particular microcontroller to see what they specify.
+    \item[\textbf{dot\_a\_linkage}] An optional option. If set to \emph{true}, the library source files will be compiled to an ``archive'' library---\path{Library_name.a}---and then linked to the compiled sketch; if set to \emph{false} then all the source files are compiled to separate \path{*.o} object files and then all are linked with the sketch's \path{sketch.o} to create the \path{sketch.ino.hex}\footnote{Well, not quite! A \path{sketch.ino.elf} is created by the compilation process. Then the \emph{objcopy} utility is executed to convert the \path{sketch.ino.elf} to \path{sketch.ino.hex}---but you get my drift I hope!} file for uploading.
+\end{description}
+
+The properties file is named \path{library.properties}, in lower case, and must live in the root directory for the library.
+
+\section{The Keywords File}
+
+The \path{keywords.txt} file tells the IDE \emph{at versions prior to 2.0} how to syntax highlight the various keywords used by the library defines, functions, procedures and so on.
+
+It is no longer used with version 2.0 of the IDE and more recent versions. Syntax highlighting in the new IDE is a bit less dependent on the library authors!
+
+You can omit this file for your own libraries, but if you are distributing them for use by others, it's nice to help out those unfortunates who have yet to upgrade to the new IDE!
+
+The \path{keywords.txt} file I'm using for the LM75\_AB library is shown in Listing \ref{lst: The keywords.txt file for the LM75_AB library}.
+
+\begin{lstlisting}[caption={The \texttt{keywords.txt} file for the LM75\_AB library.},label={lst: The keywords.txt file for the LM75_AB library}]
+# Syntax Coloring Map
+
+# Classes (KEYWORD1)
+# Bold orange highlighting.
+
+
+# Class Methods & Functions (KEYWORD2)
+# Orange highlighting.
+
+LM75_begin	KEYWORD2
+LM75_end	KEYWORD2
+LM75_setRegister	KEYWORD2
+LM75_getProductId	KEYWORD2
+LM75_getCurrentTemperature	KEYWORD2
+
+
+# Others Constants (LITERAL1)
+# Light blue highlighting.
+
+# LM75 Registers.
+LM75_TEMPERATURE_REG	LITERAL1
+LM75_CONFIG_REG	LITERAL1
+LM75_T_HYST_REG	LITERAL1
+LM75_T_OS_REG 	LITERAL1
+LM75_PRODUCT_ID_REG	LITERAL1
+
+# LM75 Configuration bits.
+LM75_FAULTS_1	LITERAL1
+LM75_FAULTS_2	LITERAL1
+LM75_FAULTS_4	LITERAL1
+LM75_FAULTS_6	LITERAL1
+LM75_OS_POLARITY_LOW	LITERAL1
+LM75_OS_POLARITY_HIGH	LITERAL1
+LM75_COMPARATOR_MODE	LITERAL1
+LM75_INTERRUPT_MODE	LITERAL1
+LM75_SHUTDOWN_ENABLE	LITERAL1
+LM75_SHUTDOWN_DISABLE	LITERAL1
+\end{lstlisting}
+
+\begin{tips}{Warning}
+    You must use hard tabs, character \hexa{09}, between the columns. If you use spaces---or if your editor is configured to change hard tabs into a number of spaces---highlighting in the IDE will not work!
+\end{tips}
+
+\begin{tips}{Note}
+    Although I've shown all the LM75 registers and the various configuration bits, many of those are not used in this simple demo. I have, however, left them in as an ``exercise for the reader''\footnote{These are always author cop-outs!} who may wish to take the library further!
+\end{tips}
+
+The \path{keywords.txt} must live in the root directory for the library.
